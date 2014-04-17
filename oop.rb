@@ -38,7 +38,57 @@ class Deck
 end
 
 
-module Decidable
+module Hand
+
+	def calculate_total
+		values = cards.map{|e| e.value}
+
+		total = 0
+		values.each do |a|
+			if a == 'A'
+				total += 11
+			elsif a.to_i == 0
+				total += 10
+			else
+				total += a.to_i
+			end
+		end
+
+		values.select{|e| e == 'A'}.count.times do
+			if total > 21
+				total -=10
+			end
+		end
+
+		total
+	end
+
+	def show_hand
+		puts "#{name}'s Hand"
+		cards.each do |card|
+			puts "#{card}"
+		end
+		puts "#{name}'s Total = #{calculate_total}."
+	end
+
+	def add_card(new_card)
+		cards << new_card
+	end
+
+	def is_busted?
+		calculate_total > 21
+	end
+end
+
+class Player
+	include Hand
+
+	attr_accessor :name, :cards
+
+	def initialize(name)
+		@name = name
+		@cards = []
+	end
 
 	def hit_or_stay(choice)
 		"#{name} chose to #{choice}."
@@ -46,28 +96,14 @@ module Decidable
 
 end
 
-module Calculatable
-
-	def calculate_total(hand)
-	end
-end
-
-class Player
-	include Decidable
-
-	attr_accessor :name
-
-	def initialize(name)
-		@name = name
-	end
-
-end
-
 class Dealer
-	attr_accessor
+	include Hand
+
+	attr_accessor :name, :cards
 
 	def initialize
-
+		@name = "Dealer"
+		@cards = []
 	end
 
 end
@@ -87,10 +123,6 @@ class Blackjack
 	end
 
 	def deal_cards
-		player_cards << Deck.pop
-		dealer_cards << Deck.pop
-		player_cards << Deck.pop
-		dealer_cards << Deck.pop
 
 	end
 
@@ -108,10 +140,15 @@ end
 game = Blackjack.new
 d = Deck.new
 p = Player.new("Sharon")
-d.deal
-c = d.deal
+dlr = Dealer.new
 
-puts c.to_s
+p.add_card(d.deal)
+p.add_card(d.deal)
+p.show_hand
+
+dlr.add_card(d.deal)
+dlr.add_card(d.deal)
+dlr.show_hand
 
 
 
