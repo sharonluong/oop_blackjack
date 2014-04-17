@@ -1,0 +1,31 @@
+1. 	@a = 2. @a is an instance variable with a Fixnum value of 2.
+		user = User.new. We are instantiating a new object "user" from the class User.
+		user.name. We are calling an instance method "name" for the instantiated object "user"
+		user.name = "Joe". We are calling the instance method "name" and setting a string value for the instance method name.
+
+2. How does a class mix in a module?
+		A class must include the name of the module for the instance methods inside the module to be used.
+
+3. What's the difference between class variables and instance variables?
+		Class variables are shared between all instances of a class and must be initialized within the class definition. Class variables are prefixed with 2 @ characters (ex: @@variable). Instance variables keep track of states and correlate the the states of objects (or instances). They are defined in instance methods and have only one @ character (ex: @variable).
+
+4. What does attr_accessor do?
+		attr_accessor creates getter and setter methods for terms defined within it.
+
+5. How would you describe this expression: Dog.some_method
+		We are calling the class method "some_method" on the class Dog.
+
+6. What is the difference between subclassing and mixing in modules?
+		Subclassing has to do with class inheritance. The subclasses share a "is a " relationship with each other. Modules are for when classes share a "has a" relationship (but not all classes share this relationship).
+
+7. Given that I can instantiate a user like this: User.new('Bob'), what would the initialize method look like for the User class?
+		
+		def initialize(name)
+			@name = name
+		end
+
+8. Can you call instance methods of the same class from other instance methods in that class?
+	Yes.
+
+9. When you get stuck, what's the process you use to try to trap the error?
+		Pry.
