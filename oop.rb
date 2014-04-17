@@ -7,7 +7,7 @@ class Card
 	end
 
 	def to_s
-		"This is your card: #{value} of #{suit}."
+		"#{value} of #{suit}."
 	end
 
 end
@@ -94,6 +94,10 @@ class Player
 		"#{name} chose to #{choice}."
 	end
 
+	def show_flow
+		show_hand
+	end
+
 end
 
 class Dealer
@@ -104,6 +108,12 @@ class Dealer
 	def initialize
 		@name = "Dealer"
 		@cards = []
+	end
+
+	def show_flow
+		puts "---Dealer's Hand---"
+		puts "First card is hidden"
+		puts "#{cards[1]}"
 	end
 
 end
@@ -129,11 +139,12 @@ class Blackjack
 	end
 
 	def show_flow
-		player.show_hand
-		dealer.show_hand
+		player.show_flow
+		dealer.show_flow
 	end
 
 	def player_turn
+		puts "#{player.name}'s turn."
 		if player.total == 21
 			puts "Congratulations, #{player.name}!"
 			exit
@@ -162,15 +173,19 @@ class Blackjack
 	end
 
 	def dealer_turn
+		puts "Dealer's turn."
 		if dealer.total == 21
 			puts "Dealer got blackjack! #{player.name} loses."
 			exit
 		end
 
-		while dealer.total <= 17
+		while dealer.total < 17
+			new_card = deck.deal		
+			puts "Dealing card to dealer. #{new_card}"
 			deal_cards(dealer)
-			show_flow
+			puts "Dealer total is now #{dealer.total}."
 		end
+		puts "Dealer stays at #{dealer.total}."
 
 	end
 
@@ -182,9 +197,9 @@ class Blackjack
 		elsif dealer.total < player.total
 			puts "#{player.name} won!"
 		elsif dealer.total == 21
-			puts "Dealer got blackjack. #{player_name} loses."
+			puts "Dealer got blackjack. #{player.name} loses."
 		elsif dealer.total > player.total
-			puts "Dealer Won!"
+			puts "Dealer's total is #{dealer.total}. Dealer Won!"
 		else 
 			puts "It's a tie. Here is your bet back."
 		end
