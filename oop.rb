@@ -119,36 +119,53 @@ class Blackjack
 		@deck = Deck.new
 		@player_cards = []
 		@dealer_cards = []
-		puts "Hello, #{@player}!"
+		puts "Hello, #{@player.name}!"
 	end
 
 	def deal_cards
+		player.add_card(deck.deal)
+		dealer.add_card(deck.deal)
+		player.add_card(deck.deal)
+		dealer.add_card(deck.deal)
+	end
 
+	def show_flow
+		player.show_hand
+		dealer.show_hand
+	end
+
+	def player_turn
+		puts "Would you like to hit or stay?"
+		choice = gets.chomp
+	end
+
+	def dealer_turn
+
+	end
+
+	def who_won?
+		if dealer.calculate_total > player.calculate_total
+			puts "Dealer Won!"
+		elsif dealer.calculate_total < player.calculate_total
+			puts "#{player.name} won!"
+		else 
+			puts "It's a tie. Here is your bet back."
+		end
 	end
 
 	def run
 		deal_cards
-		#show_flow
+		show_flow
 		#player_turn
 		#dealer_turn
-		# who_won?
+		who_won?
 	end
 
 	
 end
 
-game = Blackjack.new
-d = Deck.new
-p = Player.new("Sharon")
-dlr = Dealer.new
+game = Blackjack.new.run
 
-p.add_card(d.deal)
-p.add_card(d.deal)
-p.show_hand
-
-dlr.add_card(d.deal)
-dlr.add_card(d.deal)
-dlr.show_hand
 
 
 
