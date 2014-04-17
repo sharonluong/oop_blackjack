@@ -40,7 +40,7 @@ end
 
 module Hand
 
-	def calculate_total
+	def total
 		values = cards.map{|e| e.value}
 
 		total = 0
@@ -64,11 +64,11 @@ module Hand
 	end
 
 	def show_hand
-		puts "#{name}'s Hand"
+		puts "---#{name}'s Hand---"
 		cards.each do |card|
 			puts "#{card}"
 		end
-		puts "#{name}'s Total = #{calculate_total}."
+		puts "#{name}'s Total = #{total}."
 	end
 
 	def add_card(new_card)
@@ -76,7 +76,7 @@ module Hand
 	end
 
 	def is_busted?
-		calculate_total > 21
+		total > 21
 	end
 end
 
@@ -114,7 +114,9 @@ class Blackjack
 	attr_accessor :player, :dealer, :deck, :player_cards, :dealer_cards
 
 	def initialize
-		@player = Player.new('Sharon')
+		puts "What's your name?"
+		player_name = gets.chomp
+		@player = Player.new(player_name)
 		@dealer = Dealer.new
 		@deck = Deck.new
 		@player_cards = []
@@ -122,11 +124,8 @@ class Blackjack
 		puts "Hello, #{@player.name}!"
 	end
 
-	def deal_cards
-		player.add_card(deck.deal)
-		dealer.add_card(deck.deal)
-		player.add_card(deck.deal)
-		dealer.add_card(deck.deal)
+	def deal_cards(person)
+		person.add_card(deck.deal)
 	end
 
 	def show_flow
@@ -135,29 +134,71 @@ class Blackjack
 	end
 
 	def player_turn
-		puts "Would you like to hit or stay?"
-		choice = gets.chomp
+		if player.total == 21
+			puts "Congratulations, #{player.name}!"
+			exit
+		end
+
+		while player.total < 21
+			puts "Would you like to hit or stay?"
+			choice = gets.chomp
+			if !['hit', 'stay'].include?(choice)
+				puts "Error: enter hit or stay."
+				
+			end
+			if choice == "stay"
+				puts "You chose to stay. Your total is #{player.total}"
+				break
+			else
+				deal_cards(player)
+				show_flow
+			end
+		end
+
+		if player.total > 21
+			puts "#{player.name} busted!"
+			exit
+		end
 	end
 
 	def dealer_turn
+		if dealer.total == 21
+			puts "Dealer got blackjack! #{player.name} loses."
+			exit
+		end
+
+		while dealer.total <= 17
+			deal_cards(dealer)
+			show_flow
+		end
 
 	end
 
 	def who_won?
-		if dealer.calculate_total > player.calculate_total
-			puts "Dealer Won!"
-		elsif dealer.calculate_total < player.calculate_total
+		if dealer.total > 21
+			puts "Dealer busted. #{player.name} wins!"
+		elsif  player.total == 21 
+			puts "#{player.name} got blackjack!"
+		elsif dealer.total < player.total
 			puts "#{player.name} won!"
+		elsif dealer.total == 21
+			puts "Dealer got blackjack. #{player_name} loses."
+		elsif dealer.total > player.total
+			puts "Dealer Won!"
 		else 
 			puts "It's a tie. Here is your bet back."
 		end
 	end
 
 	def run
-		deal_cards
+		deal_cards(player)
+		deal_cards(dealer)
+		deal_cards(player)
+		deal_cards(dealer)
 		show_flow
-		#player_turn
-		#dealer_turn
+		player_turn
+		show_flow
+		dealer_turn
 		who_won?
 	end
 
